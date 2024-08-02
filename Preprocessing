@@ -1,0 +1,176 @@
+Lab Sheet: Text Mining Preprocessing with Python
+Objectives
+
+Implement basic text preprocessing techniques.
+Clean and prepare text data for further analysis.
+Use Bag of Words (BoW) and Term Frequency-Inverse Document Frequency (TF-IDF) models to vectorize text data.
+Understand and apply common text mining techniques.
+Use libraries such as nltk and re to perform common preprocessing tasks.
+Double-click (or enter) to edit
+
+Prerequisites
+
+Basic knowledge of Python programming.
+Understanding of text processing concepts.
+Python installed on your machine.
+Internet connection to download necessary libraries.
+Instructions
+
+1. Set Up Your Environment
+
+Install Python: Make sure you have Python 3.x installed. You can download it from python.org.
+
+Create and Activate a Virtual Environment (optional but recommended):
+
+Create a virtual environment:
+
+[ ]
+python -m venv myenv
+Activate the virtual environment
+On Windows
+
+[ ]
+myenv\Scripts\activate
+On macOS/Linux
+
+[ ]
+source myenv/bin/activate
+Install Required Libraries:
+Install 'nltk'
+
+[ ]
+pip install nltk
+Requirement already satisfied: nltk in /usr/local/lib/python3.10/dist-packages (3.8.1)
+Requirement already satisfied: click in /usr/local/lib/python3.10/dist-packages (from nltk) (8.1.7)
+Requirement already satisfied: joblib in /usr/local/lib/python3.10/dist-packages (from nltk) (1.4.2)
+Requirement already satisfied: regex>=2021.8.3 in /usr/local/lib/python3.10/dist-packages (from nltk) (2024.5.15)
+Requirement already satisfied: tqdm in /usr/local/lib/python3.10/dist-packages (from nltk) (4.66.4)
+2. Download NLTK Resources
+
+You need to download specific resources from 'nltk' to use stopwords and tokenizers. Run the following code to download these resources:
+
+
+[ ]
+import nltk
+nltk.download('punkt')
+nltk.download('stopwords')
+[nltk_data] Downloading package punkt to /root/nltk_data...
+[nltk_data]   Unzipping tokenizers/punkt.zip.
+[nltk_data] Downloading package stopwords to /root/nltk_data...
+[nltk_data]   Unzipping corpora/stopwords.zip.
+True
+3. Implement the Preprocessing Code
+
+Create a Python script or Jupyter Notebook with the following code to perform text preprocessing:
+
+
+[ ]
+import re
+import nltk
+from nltk.corpus import stopwords
+from nltk.tokenize import word_tokenize
+from nltk.stem import PorterStemmer
+
+# Initialize the stemmer and stopwords
+stemmer = PorterStemmer()
+stop_words = set(stopwords.words('english'))
+
+def preprocess_text(text):
+    # Convert text to lowercase
+    text = text.lower()
+
+    # Remove punctuation
+    text = re.sub(r'[^\w\s]', '', text)
+
+    # Tokenize the text
+    tokens = word_tokenize(text)
+
+    # Remove stopwords and perform stemming
+    tokens = [stemmer.stem(word) for word in tokens if word not in stop_words]
+
+    return tokens
+
+# Sample text
+text = "Hello world! This is an example of text preprocessing in Python. Let's clean this text."
+
+# Preprocess the sample text
+preprocessed_tokens = preprocess_text(text)
+print(preprocessed_tokens)
+['hello', 'world', 'exampl', 'text', 'preprocess', 'python', 'let', 'clean', 'text']
+Run the Code
+Execute the script or notebook to see the output of the 'preprocessing steps'. The preprocessed_tokens variable should contain the cleaned and processed tokens from the sample text.
+
+Implement Bag of Words (BoW)
+Add the following code to convert the preprocessed text into a Bag of Words model:
+
+
+[ ]
+from sklearn.feature_extraction.text import CountVectorizer
+
+# Sample documents
+documents = [
+    "Hello world! This is an example of text preprocessing.",
+    "Text mining is an important aspect of data analysis.",
+    "Let's clean and prepare text data for analysis."
+]
+
+# Initialize CountVectorizer
+vectorizer = CountVectorizer(stop_words='english')
+
+# Fit and transform the documents
+X = vectorizer.fit_transform(documents)
+
+# Get feature names and converted document matrix
+feature_names = vectorizer.get_feature_names_out()
+document_matrix = X.toarray()
+
+print("Feature Names:", feature_names)
+print("Document Matrix (BoW):")
+print(document_matrix)
+Feature Names: ['analysis' 'aspect' 'clean' 'data' 'example' 'hello' 'important' 'let'
+ 'mining' 'prepare' 'preprocessing' 'text' 'world']
+Document Matrix (BoW):
+[[0 0 0 0 1 1 0 0 0 0 1 1 1]
+ [1 1 0 1 0 0 1 0 1 0 0 1 0]
+ [1 0 1 1 0 0 0 1 0 1 0 1 0]]
+6. Implement TF-IDF
+
+Add the following code to convert the text into a TF-IDF representation:
+
+
+[ ]
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+# Initialize TfidfVectorizer
+tfidf_vectorizer = TfidfVectorizer(stop_words='english')
+
+# Fit and transform the documents
+X_tfidf = tfidf_vectorizer.fit_transform(documents)
+
+# Get feature names and converted document matrix
+feature_names_tfidf = tfidf_vectorizer.get_feature_names_out()
+document_matrix_tfidf = X_tfidf.toarray()
+
+print("Feature Names (TF-IDF):", feature_names_tfidf)
+print("Document Matrix (TF-IDF):")
+print(document_matrix_tfidf)
+Feature Names (TF-IDF): ['analysis' 'aspect' 'clean' 'data' 'example' 'hello' 'important' 'let'
+ 'mining' 'prepare' 'preprocessing' 'text' 'world']
+Document Matrix (TF-IDF):
+[[0.         0.         0.         0.         0.47952794 0.47952794
+  0.         0.         0.         0.         0.47952794 0.28321692
+  0.47952794]
+ [0.35829137 0.4711101  0.         0.35829137 0.         0.
+  0.4711101  0.         0.4711101  0.         0.         0.27824521
+  0.        ]
+ [0.35829137 0.         0.4711101  0.35829137 0.         0.
+  0.         0.4711101  0.         0.4711101  0.         0.27824521
+  0.        ]]
+Exercises
+
+Implement Lemmatization: Replace the stemming process with lemmatization using WordNetLemmatizer.
+
+Handle Different Languages: Modify the code to preprocess text in a different language using the appropriate stopwords and tokenizers.
+
+Explore Other Vectorizers: Try using HashingVectorizer and compare it with CountVectorizer and TfidfVectorizer.
+
